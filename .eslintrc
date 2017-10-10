@@ -1,0 +1,17 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "rules": {
+    "comma-dangle": [2, "never"],
+    "no-console": 1,
+    "object-curly-spacing": [1, "never"],
+    "semi": [2, "never"]
+  }
+}

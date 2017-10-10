@@ -1,0 +1,26 @@
+{
+  "name": "webpack-live-server",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "eslint lib/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "webpack": "^2 || ^3"
+  },
+  "dependencies": {
+    "chalk": "^2.1.0",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.8.0",
+    "webpack": "^3.6.0"
+  },
+  "bin": {
+    "webpack-live-server": "./bin/webpack-live-server.js"
+  }
+}
