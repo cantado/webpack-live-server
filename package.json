@@ -17,8 +17,7 @@
     "minimist": "^1.2.0"
   },
   "devDependencies": {
-    "eslint": "^4.8.0",
-    "webpack": "^3.6.0"
+    "eslint": "^4.8.0"
   },
   "bin": {
     "webpack-live-server": "./bin/webpack-live-server.js"
