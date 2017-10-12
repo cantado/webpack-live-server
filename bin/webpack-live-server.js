@@ -142,6 +142,7 @@ const run = (options = {}) => {
   const exit = () => {
     watching.close()
     killProcess()
+    process.exit(0)
   }
 
   signals.forEach((signal) => process.on(signal, exit))
