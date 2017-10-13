@@ -7,14 +7,6 @@ const minimist = require('minimist')
 const chalk = require('chalk')
 
 let childProcess = null
-const signals = [
-  'SIGINT',
-  'SIGTERM',
-  'SIGHUP',
-  'SIGQUIT',
-  'exit',
-  'uncaughtException'
-]
 
 const logInfo = (info) => {
   process.stdout.write(chalk.green(`${info}\n`))
@@ -76,7 +68,7 @@ const getDefaultExecuteCommand = (webpackConfig, buildInfo) => {
 }
 
 const killProcess = () => {
-  if (childProcess) {
+  if (childProcess && !childProcess.killed) {
     childProcess.kill()
   }
 }
@@ -138,14 +130,6 @@ const run = (options = {}) => {
     const executeCommand = options.executeCommand || getDefaultExecuteCommand(webpackConfig, info)
     spawnProcess(executeCommand)
   })
-
-  const exit = () => {
-    watching.close()
-    killProcess()
-    process.exit(0)
-  }
-
-  signals.forEach((signal) => process.on(signal, exit))
 }
 
 const argv = minimist(process.argv.slice(2), {'--': true})
