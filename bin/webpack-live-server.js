@@ -5,8 +5,10 @@ const path = require('path')
 const webpack = require('webpack')
 const minimist = require('minimist')
 const chalk = require('chalk')
+const MemoryFS = require('memory-fs')
 
 let childProcess = null
+const memFs = new MemoryFS()
 
 const logInfo = (info) => {
   process.stdout.write(chalk.green(`${info}\n`))
@@ -61,9 +63,10 @@ const getDefaultExecuteCommand = (webpackConfig, buildInfo) => {
   const {entrypoints} = buildInfo
   const basename = firstItem(entrypoints).assets[0]
   const file = path.resolve(context, outputPath, basename)
+  const fileContent = memFs.readFileSync(file).toString()
   return {
     command: 'node',
-    args: [file]
+    args: ['-e', fileContent]
   }
 }
 
@@ -102,6 +105,7 @@ const run = (options = {}) => {
   }
 
   const compiler = webpack(webpackConfig)
+  compiler.outputFileSystem = memFs
 
   const watching = compiler.watch({}, (err, stats) => {
     killProcess()

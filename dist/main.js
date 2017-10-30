@@ -68,6 +68,12 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 
+/* require.ensure(['./test'], ((require) => {
+  const val = require('./test')
+  setInterval(console.log, 2001, val)
+})) */
+
+
 const val = __webpack_require__(1)
 setInterval(console.log, 2001, val)
 
