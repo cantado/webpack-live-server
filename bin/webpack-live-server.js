@@ -27,6 +27,10 @@ const clearConsole = () => {
   logInfo('⌃C to exit.')
 }
 
+const first = (arr) => Array.isArray(arr) ? arr[0] : arr
+
+const firstItem = (obj) => obj[Object.keys(obj)[0]]
+
 const getAssetInfoString = (asset) => `\t${asset.name}\t${asset.size}`
 
 const printBuildInfo = (info) => {
@@ -36,6 +40,12 @@ Build Time: ${info.time}
 Build Hash: ${info.hash}
 Build Assets:\n${buildAssets.map(getAssetInfoString).join('\n')}
 `)
+}
+
+const printBuildInfos = (info) => {
+  const {children = []} = info
+  const infos = children.length ? children : [info]
+  infos.forEach(printBuildInfo)
 }
 
 const getWebpackOptions = (configPath) => {
@@ -53,14 +63,13 @@ const getExecuteObject = (arr) => {
   }
 }
 
-const firstItem = (obj) => obj[Object.keys(obj)[0]]
-
-const getDefaultExecuteCommand = (webpackConfig, buildInfo) => {
+const getDefaultExecuteCommand = (webpackConfigs, buildInfo) => {
+  const webpackConfig = first(webpackConfigs)
   const {
     output: {path: outputPath},
     context = ''
   } = webpackConfig
-  const {entrypoints} = buildInfo
+  const {entrypoints} = first(buildInfo.children) || buildInfo
   const basename = firstItem(entrypoints).assets[0]
   const file = path.resolve(context, outputPath, basename)
   const fileContent = memFs.readFileSync(file).toString()
@@ -129,7 +138,7 @@ const run = (options = {}) => {
       logWarning(info.warnings)
     }
 
-    printBuildInfo(info)
+    printBuildInfos(info)
 
     const executeCommand = options.executeCommand || getDefaultExecuteCommand(webpackConfig, info)
     spawnProcess(executeCommand)

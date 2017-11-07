@@ -6,18 +6,36 @@ const nodeModules = fs.readdirSync(path.resolve(process.cwd(), 'node_modules'))
   .reduce((modules, mod) => Object.assign(modules, {[mod]: `commonjs ${mod}`}))
 
 const config = (options, args = {}) => {
-  return {
-    entry: path.resolve(process.cwd(), 'index.js'),
+  const bar = [
+    {
+      entry: path.resolve(process.cwd(), 'index.js'),
 
-    target: 'node',
+      target: 'node',
 
-    output: {
-      path: path.resolve(process.cwd(), 'dist'),
-      filename: '[name].js'
+      output: {
+        path: path.resolve(process.cwd(), 'dist'),
+        filename: '[name].js'
+      },
+
+      externals: nodeModules
     },
+    {
+      entry: {
+        bar: path.resolve(process.cwd(), 'index.js')
+      },
 
-    externals: nodeModules
-  }
+      target: 'node',
+
+      output: {
+        path: path.resolve(process.cwd(), 'dist'),
+        filename: '[name].js'
+      },
+
+      externals: nodeModules
+    }
+  ]
+
+  return bar
 }
 
 module.exports = config
