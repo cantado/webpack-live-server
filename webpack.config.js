@@ -21,7 +21,7 @@ const config = (options, args = {}) => {
     },
     {
       entry: {
-        bar: path.resolve(process.cwd(), 'index.js')
+        bar: path.resolve(process.cwd(), 'index2.js')
       },
 
       target: 'node',
