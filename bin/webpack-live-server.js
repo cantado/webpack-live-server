@@ -63,7 +63,7 @@ const getExecuteObject = (arr) => {
   }
 }
 
-const getDefaultExecuteCommand = (webpackConfigs, buildInfo) => {
+const getNodeArg = (webpackConfigs, buildInfo, options = {}) => {
   const webpackConfig = first(webpackConfigs)
   const {
     output: {path: outputPath},
@@ -72,10 +72,18 @@ const getDefaultExecuteCommand = (webpackConfigs, buildInfo) => {
   const {entrypoints} = first(buildInfo.children) || buildInfo
   const basename = firstItem(entrypoints).assets[0]
   const file = path.resolve(context, outputPath, basename)
+  if (!options.inMemory) {
+    return [file]
+  }
   const fileContent = memFs.readFileSync(file).toString()
+  return ['-e', fileContent]
+}
+
+const getDefaultExecuteCommand = (webpackConfigs, buildInfo, options = {}) => {
+  const args = getNodeArg(webpackConfigs, buildInfo, options)
   return {
     command: 'node',
-    args: ['-e', fileContent]
+    args
   }
 }
 
@@ -114,7 +122,9 @@ const run = (options = {}) => {
   }
 
   const compiler = webpack(webpackConfig)
-  compiler.outputFileSystem = memFs
+  if (options.inMemory) {
+    compiler.outputFileSystem = memFs
+  }
 
   const watching = compiler.watch({}, (err, stats) => {
     killProcess()
@@ -140,7 +150,7 @@ const run = (options = {}) => {
 
     printBuildInfos(info)
 
-    const executeCommand = options.executeCommand || getDefaultExecuteCommand(webpackConfig, info)
+    const executeCommand = options.executeCommand || getDefaultExecuteCommand(webpackConfig, info, options)
     spawnProcess(executeCommand)
   })
 }
@@ -149,6 +159,7 @@ const argv = minimist(process.argv.slice(2), {'--': true})
 
 const params = {
   config: argv.config || './webpack.config.js',
+  inMemory: argv.memory || argv.m,
   executeCommand: getExecuteObject(argv['--'])
 }
 
